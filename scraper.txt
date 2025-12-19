@@ -1,0 +1,60 @@
+import urllib.request
+import re
+import string
+#https://en.wikipedia.org/wiki/Web_scraping#Legal_issues
+#https://docs.python.org/3/library/re.html
+
+"""""
+
+https://www.presidency.ucsb.edu/node/200000 start of state
+https://www.presidency.ucsb.edu/node/200257 start of president
+https://www.presidency.ucsb.edu/node/200301 trump
+https://www.presidency.ucsb.edu/node/200302 starts at Al Smith
+https://www.presidency.ucsb.edu/node/200380 start of text
+
+
+https://www.presidency.ucsb.edu/documents/app-categories/elections-and-transitions/debates?page=0
+
+<div class=\"field-title\">
+
+<div class=\"col-sm-4  margin-top\">
+
+<div class=\"field-docs-content\">
+<div class=\"field-prez-document-citation\">
+
+
+"""""
+with open("LinksAug19th.txt") as file:
+    lines = [line.rstrip() for line in file]
+
+
+def webinfo (url):
+    webpage = urllib.request.urlopen(url)
+    pagestuff = webpage.read()
+    pageinfo = pagestuff.decode("utf-8")
+    info = pageinfo[(pageinfo.find("<div class=\"field-docs-content\">") + len("<div class=\"field-docs-content\">")):pageinfo.find("<div class=\"field-prez-document-citation\">")]
+    info = re.sub('<[^>]+>', '', info)
+    info = re.sub("[\[].*?[\]]", "", info)
+    info = re.sub(chr(8212), "", info)
+    info = re.sub(chr(2026), "", info)
+    return info
+
+letters = string.ascii_lowercase
+
+for x in range(len(lines)):
+    with open(letters[x]+".txt", "w") as file:
+        file.write(webinfo(lines[x]))
+
+
+"""""
+https://www.presidency.ucsb.edu/node/373582
+https://www.presidency.ucsb.edu/node/369407
+https://www.presidency.ucsb.edu/node/347223
+https://www.presidency.ucsb.edu/node/346909
+
+
+https://www.presidency.ucsb.edu/node/370507
+
+
+"""""
+
